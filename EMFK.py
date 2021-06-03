@@ -1,4 +1,3 @@
-
  #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # encoding: utf-8
@@ -49,12 +48,11 @@ GPIO.setup(botaoAmarelo, GPIO.IN)
 GPIO.setup(botaoVermelho, GPIO.IN)
 
 # API MS Face
-KEY = '#######'  # Chave da API .
+KEY = '###############'  # Chave da API .
 CF.Key.set(KEY)
 BASE_URL = 'https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/'  # URL Regional
 CF.BaseUrl.set(BASE_URL)
 img_url=None
-
 
 ResultadoEsperado=0
 RespUsuarioDez=0
@@ -71,23 +69,22 @@ cicloAtual=None
 arquivo=None
 precisaInverter=None
 
+# código do cartão , número associado
+cadCartao=[[666127655853 , 0],[368600507305 , 0],
+            [1009695050677 , 1],[1009287572992 , 1],
+            [76190409602 , 2],[7927483281 , 2],
+            [1075072295835 , 3],[789963852562 , 3],
+            [488473715684 , 4],[469300923233 , 4],
+            [606014890938 , 5],[863599053715 , 5],
+            [444604861355 , 6],[682200163175 , 6],
+            [1008705194873 , 7],[109637773789 , 7],
+            [420193946621 , 8],[30388544315 , 8],
+            [953978891258 , 9],[991783725391 , 9]]
 
-
-felicidade=-1
-raiva=-1
-neutro=-1
-surpreso=-1
-tristeza=-1
-desprezo=-1
-medo=-1
-desgosto=-1
-genero=-1
-idade=-1
-
+tamanhoCadCartao=len(cadCartao)
 
 # print("quantidade de Cartões cadastrados = " +str(tamanhoCadCartao))
 
-############################
 #### Funções
 estadoBotaoVerde=0
 estadoBotaoAzul=0
@@ -132,27 +129,12 @@ def sairSistema():
     time.sleep(1)
     os._exit(0)
     #os.system('sudo shutdown -h now') # Desliga o SISTEMA    
-# código do cartão , número associado
-
-cadCartao=[[666127655853 , 0],[368600507305 , 0],
-           [1009695050677 , 1],[1009287572992 , 1],
-           [733469072286 , 2],[7927483281 , 2],
-           [1075072295835 , 3],[789963852562 , 3],
-           [488473715684 , 4],[469300923233 , 4],
-           [606014890938 , 5],[863599053715 , 5],
-           [444604861355 , 6],[682200163175 , 6],
-           [1008705194873 , 7],[109637773789 , 7],
-           [420193946621 , 8],[30388544315 , 8],
-           [953978891258 , 9],[991783725391 , 9]]
-
-tamanhoCadCartao=len(cadCartao)
 
 def pesquisa(cartao):
     for index in range(tamanhoCadCartao):
         if (cadCartao[index][0]== cartao):
             return index
     return -1;  
-
 
 def lerCartao_Dez():
     global RespUsuarioDez
@@ -172,9 +154,7 @@ def lerCartao_Uni():
         RespUsuarioUni=cadCartao[index][1]
 
     print("Leitor Unidade Codigo = " +str(valor_Uni) +"  || Valor Unidade = " +str(RespUsuarioUni))
- 
-
-   
+    
 def sorteioNumeros():
     global ResultadoEsperado
     global N1
@@ -184,14 +164,14 @@ def sorteioNumeros():
 
     global precisaInverter
     global jaInverteu
-    ##############
+    
     conexaoBancoAjuste=sqlite3.connect('ajuste.db')
     bancoAjuste=conexaoBancoAjuste.cursor()
     for linha in bancoAjuste.execute("SELECT valor FROM tabAjuste WHERE id=1;"):
         ajuste=int(linha[0])
     conexaoBancoAjuste.close()
-    ##################
-    if (precisaInverter=='S' and jaInverteu==None ):
+    
+    if (precisaInverter=='S' and jaInverteu==None and operacao!='-'):
         X=N1
         N1=N2
         N2=X
@@ -212,118 +192,117 @@ def sorteioNumeros():
                 
             ResultadoEsperado=N1+N2
             
-        if (operacao=='-'):
-            if(ajuste>=5):
-                N1 = randint(4,9)
-                N2 = randint(0,N1)
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(2,8)
-                N2 = randint(1,N1)
-            else:
-                N1 = randint(2,5)
-                N2 = randint(1,N1)
-                    
-            ResultadoEsperado=N1-N2 
-        
-        if (operacao=='x'):
-            if(ajuste>=5):
-                N1 = randint(1,5)
-                N2 = randint(0,10)
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(1,3)
-                N2 = randint(1,10)
-            else:
-                N1 = randint(1,2)
-                N2 = randint(0,5)
+            if (operacao=='-'):
+                if(ajuste>=5):
+                    N1 = randint(4,9)
+                    N2 = randint(0,N1)
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(2,8)
+                    N2 = randint(1,N1)
+                else:
+                    N1 = randint(2,5)
+                    N2 = randint(1,N1)
+                        
+                ResultadoEsperado=N1-N2 
             
-            ResultadoEsperado=N1*N2
+            if (operacao=='x'):
+                if(ajuste>=5):
+                    N1 = randint(1,5)
+                    N2 = randint(0,10)
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(1,3)
+                    N2 = randint(1,10)
+                else:
+                    N1 = randint(1,2)
+                    N2 = randint(0,5)
+                
+                ResultadoEsperado=N1*N2
 
 
-    if (nivel==22):
-        if (operacao=='+'):
-            if(ajuste>=5):
-                N1 = randint(10,20)
-                N2 = randint(5,20)
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(5,10)
-                N2 = randint(5,10)
-            else:
-                N1 = randint(5,10)
-                N2 = randint(1,5)
+        if (nivel==22):
+            if (operacao=='+'):
+                if(ajuste>=5):
+                    N1 = randint(10,20)
+                    N2 = randint(5,20)
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(5,10)
+                    N2 = randint(5,10)
+                else:
+                    N1 = randint(5,10)
+                    N2 = randint(1,5)
+                
+                ResultadoEsperado=N1+N2
+                
+            if (operacao=='-'):
+                if(ajuste>=5):
+                    N1 = randint(4,9)
+                    N2 = randint(0,N1)
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(6,9)
+                    N2 = randint(1,N1)
+                else:
+                    N1 = randint(2,5)
+                    N2 = randint(1,N1)
+                        
+                ResultadoEsperado=N1-N2 
             
-            ResultadoEsperado=N1+N2
-            
-        if (operacao=='-'):
-            if(ajuste>=5):
-                N1 = randint(4,9)
-                N2 = randint(0,N1)
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(6,9)
-                N2 = randint(1,N1)
-            else:
-                N1 = randint(2,5)
-                N2 = randint(1,N1)
-                    
-            ResultadoEsperado=N1-N2 
+            if (operacao=='x'):
+                if(ajuste>=5):
+                    N1 = randint(2,10)
+                    N2 = randint(0,10)
+                    if(N1==10 and N2==10):
+                        N2=9
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(3,6)
+                    N2 = randint(1,10)
+                else:
+                    N1 = randint(1,3)
+                    N2 = randint(1,10)
+                
+                ResultadoEsperado=N1*N2
         
-        if (operacao=='x'):
-            if(ajuste>=5):
-                N1 = randint(2,10)
-                N2 = randint(0,10)
-                if(N1==10 and N2==10):
-                    N2=9
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(3,6)
-                N2 = randint(1,10)
-            else:
-                N1 = randint(1,3)
-                N2 = randint(1,10)
+        if (nivel==31):
+            if (operacao=='+'):
+                if(ajuste>=5):
+                    N1 = randint(1,99)
+                    N2 = randint(0,abs(N1-99))
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(1,50)
+                    N2 = randint(0,abs(N1-60))
+                else:
+                    N1 = randint(1,30)
+                    N2 = randint(0,abs(N1-50))
+                
+                ResultadoEsperado=N1+N2
+                
+            if (operacao=='-'):
+                if(ajuste>=5):
+                    N1 = randint(50,99)
+                    N2 = randint(10,N1)
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(30,80)
+                    N2 = randint(10,30)
+                else:
+                    N1 = randint(20,50)
+                    N2 = randint(1,20)
+                        
+                ResultadoEsperado=N1-N2 
             
-            ResultadoEsperado=N1*N2
-        
-    if (nivel==31):
-        if (operacao=='+'):
-            if(ajuste>=5):
-                N1 = randint(1,99)
-                N2 = randint(0,abs(N1-99))
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(1,50)
-                N2 = randint(0,abs(N1-60))
-            else:
-                N1 = randint(1,30)
-                N2 = randint(0,abs(N1-50))
-            
-            ResultadoEsperado=N1+N2
-            
-        if (operacao=='-'):
-            if(ajuste>=5):
-                N1 = randint(50,99)
-                N2 = randint(10,N1)
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(30,80)
-                N2 = randint(10,30)
-            else:
-                N1 = randint(20,50)
-                N2 = randint(1,20)
-                    
-            ResultadoEsperado=N1-N2 
-        
-        if (operacao=='x'):
-            if(ajuste>=5):
-                N1 = randint(2,10)
-                N2 = randint(0,10)
-                if(N1==10 and N2==10):
-                    N2=9
-            elif (ajuste>=3 and ajuste <5):
-                N1 = randint(3,7)
-                N2 = randint(1,10)
-            else:
-                N1 = randint(1,5)
-                N2 = randint(1,10)
-            
-            ResultadoEsperado=N1*N2
+            if (operacao=='x'):
+                if(ajuste>=5):
+                    N1 = randint(2,10)
+                    N2 = randint(0,10)
+                    if(N1==10 and N2==10):
+                        N2=9
+                elif (ajuste>=3 and ajuste <5):
+                    N1 = randint(3,7)
+                    N2 = randint(1,10)
+                else:
+                    N1 = randint(1,5)
+                    N2 = randint(1,10)
+                
+                ResultadoEsperado=N1*N2
 
-    
     print(" @@@@@@@ N1 = " +str(N1) +"  @@@@@@@ N2 = "+str(N2) +"   Resultado esperado = " + str(ResultadoEsperado))
 
     exibeTela = str(N1) +" "+operacao+" " +str(N2) +" = ___"
@@ -335,12 +314,10 @@ def sorteioNumeros():
     janela.update()
     foto('Pre')
 
- 
 def foto(momentoRecebe):
     conexaoBanco=sqlite3.connect('matematica.db')
     banco=conexaoBanco.cursor()
     global cicloAtual
-    global momento
     global N1
     global N2
     global codigoUsuario
@@ -351,29 +328,8 @@ def foto(momentoRecebe):
     global RespUsuarioTot
     global ResultadoEsperado
     global arquivo
-    global felicidade
-    global raiva
-    global neutro
-    global surpreso
-    global tristeza
-    global desprezo
-    global medo
-    global desgosto
-    global genero
-    global idade
-    
-    felicidade=-1
-    raiva=-1
-    neutro=-1
-    surpreso=-1
-    tristeza=-1
-    desprezo=-1
-    medo=-1
-    desgosto=-1
-    genero=-1
-    idade=-1
-    global momento
     global codigoUsuario
+    global codGrupoCiclo
  
     data_e_hora_atuais = datetime.now()
     data_e_hora_em_texto = data_e_hora_atuais.strftime('%y%m%d-%H-%M-%S')
@@ -386,16 +342,44 @@ def foto(momentoRecebe):
     processo_API.start() # Iniciando
     processo_API.join(timeout=10) # esperando este tempo em segundos
     processo_API.terminate() # Encerrando o processo
-    
     ### buscando ajuste
     conexaoBancoAjuste=sqlite3.connect('ajuste.db')
     bancoAjuste=conexaoBancoAjuste.cursor()
     for linha in bancoAjuste.execute("SELECT valor FROM tabAjuste WHERE id=1;"):
         ajuste=int(linha[0])
     conexaoBancoAjuste.close()
-    ###
+      
+     # Banco API
+    conexaoBancoApi=sqlite3.connect('api.db')
+    bancoApi=conexaoBancoApi.cursor()
+    
+    for linha in bancoApi.execute("SELECT * FROM tabAPI WHERE id=1;"):
+        neutro=float(linha[1])
+        felicidade=float(linha[2])
+        surpreso=float(linha[3])
+        raiva=float(linha[4])
+        tristeza=float(linha[5])
+        desprezo=float(linha[6])
+        desgosto=float(linha[7])
+        medo=float(linha[8])
+        idade=int(linha[9])
+        genero=str(linha[10])
+    conexaoBancoApi.close()
+    
+    print (' ###  Dentro Foto - Antes de Upload  ###')
+    print('Neutro= '+ str(neutro))
+    print('Felicidade= '+ str(felicidade))
+    print('Surpreso= '+ str(surpreso))
+    print('Raiva= '+ str(raiva)) 
+    print('Tristeza= '+ str(tristeza))
+    print('Desprezo= '+ str(desprezo))
+    print('Medo= '+ str(medo))
+    print('Desgosto= '+ str(desgosto))
+    print('\nGenero= '+ str(genero))
+    print('Idade= '+ str(idade))
+    print('Momento= '+ momentoRecebe)
     print("Gravando no banco de Dados matematica. . .")
-    banco.execute ("INSERT INTO tabDados(data, hora, codAluno, nomeIMG, nivel, tipoOperacao, N1 , N2, respostaUsuario, ajuste ,ciclo , momento, apiNeutro , apiFelicidade , apiSurpreso , apiRaiva , apiTristeza , apiDesprezo , apiDesgosto  ,apiMedo , apiIdade , apiGenero ) values(date('now'), time('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)" , (codigoUsuario, arquivo, nivel, operacao, N1 , N2, RespUsuarioTot, ajuste ,cicloAtual ,momento, neutro , felicidade , surpreso , raiva , tristeza , desprezo , desgosto  ,medo , idade , genero ))
+    banco.execute ("INSERT INTO tabDados(data, hora, codAluno, nomeIMG, nivel, tipoOperacao, N1 , N2, respostaUsuario, ajuste ,ciclo , momento, apiNeutro , apiFelicidade , apiSurpreso , apiRaiva , apiTristeza , apiDesprezo , apiDesgosto  ,apiMedo , apiIdade , apiGenero, codGrupoCiclo ) values(date('now'), time('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)" , (codigoUsuario, arquivo, nivel, operacao, N1 , N2, RespUsuarioTot, ajuste ,cicloAtual ,momentoRecebe, neutro , felicidade , surpreso , raiva , tristeza , desprezo , desgosto  ,medo , idade , genero , codGrupoCiclo ))
     conexaoBanco.commit()
     conexaoBanco.close()
     
@@ -403,16 +387,12 @@ def foto(momentoRecebe):
     thread_FTP.start()
     
 def mandaFTP(caminhoLocal):
-    #host = "192.168.0.30"
-    #username = "rasp"
-    #password = "123"
-    host = "####"
-    username = "#####"
-    password = "######"
+    host = "ftp.vansan.com.br"
+    username = "#################"
+    password = "#################"
  
     try:
-        caminhoRemoto='STOR '+caminhoLocal
-            
+        caminhoRemoto='STOR '+caminhoLocal       
         print("Enviando para o FTP = " +caminhoLocal)   
         session = ftplib.FTP(host,username,password)
         file = open(caminhoLocal,'rb') # file to send
@@ -422,8 +402,7 @@ def mandaFTP(caminhoLocal):
         print("FTP OK = " +caminhoLocal)
     except:
         print("\n Erro no envio para o FTP= " +caminhoLocal)    
-    
-    
+      
 def recebeEmocao():
     global cicloAtual
     global momento
@@ -437,22 +416,22 @@ def recebeEmocao():
     global RespUsuarioTot
     global ResultadoEsperado
     global arquivo
-    global felicidade
-    global raiva
-    global neutro
-    global surpreso
-    global tristeza
-    global desprezo
-    global medo
-    global desgosto
-    global genero
-    global idade
     global corFundo
     global corTexto
     global textoErrado
     global textoCerto
     
-    ###
+    felicidade=-1
+    raiva=-1
+    neutro=-1
+    surpreso=-1
+    tristeza=-1
+    desprezo=-1
+    medo=-1
+    desgosto=-1
+    genero=-1
+    idade=-1
+
     try:
         img_url=arquivo
         attributes = ('age,gender,emotion')
@@ -473,7 +452,7 @@ def recebeEmocao():
         
         conexaoBancoAjuste=sqlite3.connect('ajuste.db')
         bancoAjuste=conexaoBancoAjuste.cursor()
-        
+    
         for linha in bancoAjuste.execute("SELECT valor FROM tabAjuste WHERE id=1;"):
             varRecebeAjuste=int(linha[0])
         
@@ -506,35 +485,29 @@ def recebeEmocao():
         bancoAjuste.execute(sqlUp)
         conexaoBancoAjuste.commit()
         conexaoBancoAjuste.close()
-        ###        
-        print('Neutro= '+ str(resultadoEmocao['faceAttributes']['emotion']['neutral']))
-        print('Felicidade= '+ str(resultadoEmocao['faceAttributes']['emotion']['happiness']))
-        print('Surpreso= '+ str(resultadoEmocao['faceAttributes']['emotion']['surprise']))
-        print('Raiva= '+ str(resultadoEmocao['faceAttributes']['emotion']['anger']))        
-        print('Tristeza= '+ str(resultadoEmocao['faceAttributes']['emotion']['sadness']))
-        print('Desprezo= '+ str(resultadoEmocao['faceAttributes']['emotion']['contempt']))
-        print('Medo= '+ str(resultadoEmocao['faceAttributes']['emotion']['fear']))
-        print('Desgosto= '+ str(resultadoEmocao['faceAttributes']['emotion']['disgust']))
-
-        print('\nGenero= '+ str(resultadoEmocao['faceAttributes']['gender']))
-        print('Idade= '+ str(resultadoEmocao['faceAttributes']['age']))
-       # sugestao=(neutro+felicidade+surpreso)-(raiva+tristeza+desprezo+desgosto+medo) 
-       # print('###### SUGESTAO Ajuste = '+ str(sugestao))  
-       # print('\n###### Ajuste Atual= '+ str(varRecebeAjuste))
-       
-
-    #   print("\n Exibindo dados do dicionario ")
-    #   for dado in resultadoEmocao:
-    #       print("%s: %s \n" % (dado, resultadoEmocao[dado]))
-    
-       
         
-    
+        print (' ###  Dentro Recebe Emoção  ###')
+        print('Neutro= '+ str(neutro))
+        print('Felicidade= '+ str(felicidade))
+        print('Surpreso= '+ str(surpreso))
+        print('Raiva= '+ str(raiva)) 
+        print('Tristeza= '+ str(tristeza))
+        print('Desprezo= '+ str(desprezo))
+        print('Medo= '+ str(medo))
+        print('Desgosto= '+ str(desgosto))
+        print('\nGenero= '+ str(genero))
+        print('Idade= '+ str(idade))
+        
     except:
         print("\n Erro no processamento da imagem ")
-
+  
+    # Banco API
+    conexaoBancoApi=sqlite3.connect('api.db')
+    bancoApi=conexaoBancoApi.cursor()
+    bancoApi.execute ("UPDATE tabAPI SET apiNeutro = " +str(neutro)+" ,apiFelicidade = " +str(felicidade)+" , apiSurpreso = " +str(surpreso)+" , apiRaiva = " +str(raiva)+"  , apiTristeza = " +str(tristeza)+" , apiDesprezo = " +str(desprezo)+" , apiDesgosto = " +str(desgosto)+" ,apiMedo = " +str(medo)+"  , apiIdade = " +str(idade)+" , apiGenero = '" +str(genero) + "' WHERE id=1")
+    conexaoBancoApi.commit()
+    conexaoBancoApi.close()
  
-
 def MicroControlador(mensagem):
     global tela
     global estadoBotaoVerde
@@ -570,8 +543,7 @@ def MicroControlador(mensagem):
             time.sleep(1)
         else:
             estadoBotaoVermelho=0
-            
-            
+                       
         if ((GPIO.input(botaoVermelho) == True) and (GPIO.input(botaoAmarelo) == True)):
             if((GPIO.input(botaoAzul) == True) and (GPIO.input(botaoVerde) == True)):
                 desligaSistema() # DESLIGA o SISTEMA
@@ -579,9 +551,8 @@ def MicroControlador(mensagem):
         if (GPIO.input(botaoVermelho) == True and GPIO.input(botaoAmarelo) == True and GPIO.input(botaoVerde) == True):
             os.system('sudo shutdown -r now') # REINICIA o SISTEMA
         
- 
- 
 def gerenciador_de_Telas(mensagem):
+    global codGrupoCiclo
     global ajuste
     global cicloAtual
     global N1
@@ -628,33 +599,31 @@ def gerenciador_de_Telas(mensagem):
         for linha in bancoAjuste.execute("SELECT valor FROM tabAjuste WHERE id=1;"):
             varRecebeAjuste=int(linha[0])
         conexaoBancoAjuste.close()
-        
-        ### Debug
-        #txtAjuste = (">>>>>  Ajuste no Banco = " +str(varRecebeAjuste))
-        #lblAjuste=Label(janela,text=txtAjuste,font=("Arial",30,'bold'),fg = '#ffffff', bg='#000000', width=25, height=2)
-        #lblAjuste.place(relx=.3, rely=.6, anchor="center")
-        
-        
+ 
         if (varRecebeAjuste<=10):
             corFundo='#8FEB78'
             corTexto='#363636'
             textoErrado='Que pena,está errado \nnão foi dessa vez.'
-            textoCerto='Parabéns Você Acertou !'             
+            textoCerto='Parabéns Você Acertou !'  
+            
         if (varRecebeAjuste<=7):
             corFundo='#8DEBDB'
             corTexto='#363636'
             textoErrado='Que pena,está errado \nvamos tentar novamente?'
-            textoCerto='Muito bom, está correto!'           
+            textoCerto='Muito bom, está correto!'  
+            
         if (varRecebeAjuste<=5):
             corFundo='#DCDCDC'
             corTexto='#363636'
             textoErrado='Que pena,está errado \nda próxima vez dará certo!'
-            textoCerto='Parabéns Você Acertou!\nContinue assim!'             
+            textoCerto='Parabéns Você Acertou!\nContinue assim!'  
+            
         if (varRecebeAjuste<=4):
             corFundo='#EB9138'
             corTexto='#363636'
             textoErrado='Que pena,está errado \ncontinue tentando'
-            textoCerto='Muito bom, está correto!\nVamos que vamos!'         
+            textoCerto='Muito bom, está correto!\nVamos que vamos!'  
+        
         if (varRecebeAjuste<=2):
             corFundo='#EBDA8B'
             corTexto='#363636'
@@ -789,7 +758,7 @@ def gerenciador_de_Telas(mensagem):
             janela.lblCima.place(relx=.4, rely=.1, anchor="center")
             lblCima['text']=txtCima
 
-            txtMeio = "Soma, Subtração\nou Multiplicação"  
+            txtMeio = "Adição, Subtração\nou Multiplicação"  
             lblMeio=Label(janela,text=txtMeio,font=("Arial",60,'bold'),fg = corTextoPadrao, bg=corFundoPadrao, width=25, height=3)
             lblMeio.place(relx=.4, rely=.4, anchor="center")
             lblMeio['text']=txtMeio
@@ -804,7 +773,7 @@ def gerenciador_de_Telas(mensagem):
             #lblVermelho.place(relx=.9, rely=.2, anchor="center")
             lblVermelho['text']=txtVermelho
 
-            txtAmarelo = "Soma\n+ "
+            txtAmarelo = "Adição\n+ "
             #lblAmarelo=Label(janela,text=txtAmarelo,font=("Arial",30,'bold'),fg = "yellow", width=10, height=3)
             #lblAmarelo.place(relx=.9, rely=.4, anchor="center")
             lblAmarelo['text']=txtAmarelo
@@ -902,8 +871,7 @@ def gerenciador_de_Telas(mensagem):
             lblVerde['text']=txtVerde
             janela.update()
             time.sleep(1)
-        
-        
+    
         ### Tela Acertou    
         if (tela=='acertou' and telaEstado!='acertou'):
             telaEstado='acertou'
@@ -945,8 +913,7 @@ def gerenciador_de_Telas(mensagem):
             janela.update()
             foto('PosC')
             time.sleep(1)
-        
-        
+          
         ### Tela ERROU  
         if (tela=='errou' and telaEstado!='errou'):
             telaEstado='errou'
@@ -988,8 +955,7 @@ def gerenciador_de_Telas(mensagem):
             janela.update()
             foto('PosE')
             time.sleep(1)
-        
-        
+    
         ### Tela Resultados 
         if (tela=='resultados' and telaEstado!='resultados'):
             telaEstado='resultados'
@@ -1031,10 +997,7 @@ def gerenciador_de_Telas(mensagem):
             janela.update()
             foto('PosR')
             time.sleep(1)
-        
-        
-            
-        #####################################################################################
+
         ################ Botoes das telas
         ### Tela Inicial
         if (telaEstado=='inicial' and estadoBotaoVermelho==1):
@@ -1048,7 +1011,6 @@ def gerenciador_de_Telas(mensagem):
             time.sleep(3)
             os.system('sudo killall -9 gpicview')
             
-                
         ### Tela Desligar   
         if(telaEstado=='desligar' and estadoBotaoVermelho==1):
             tela='inicial'
@@ -1069,8 +1031,7 @@ def gerenciador_de_Telas(mensagem):
         if(telaEstado=='nivel' and estadoBotaoVerde==1):
             tela='operacao'
             nivel=21    
-            
-            
+                    
         ### Tela Selecionar Operação
         if(telaEstado=='operacao' and estadoBotaoVermelho==1):
             tela='nivel'    
@@ -1089,15 +1050,15 @@ def gerenciador_de_Telas(mensagem):
             tela='operacao' 
         if(telaEstado=='codigo' and estadoBotaoVerde==1):
             tela='jogando'
-            ####
             conexaoBancoAjuste=sqlite3.connect('ajuste.db')
             bancoAjuste=conexaoBancoAjuste.cursor()
             sqlUp="UPDATE tabAjuste SET valor=" + str(5) + " where id=1"
             bancoAjuste.execute(sqlUp)
             conexaoBancoAjuste.commit()
             conexaoBancoAjuste.close()
-            ###
-            #print('################################ Ajustando o Ajuste Tela COD Aluno. . . ' +str(ajuste))
+            data_e_hora_atuais = datetime.now()
+            data_e_hora_em_texto = data_e_hora_atuais.strftime('%y%m%d%H%M%S')
+            codGrupoCiclo=data_e_hora_em_texto
             cicloMax=5
             cicloAtual=1
             acertos=0
@@ -1111,17 +1072,14 @@ def gerenciador_de_Telas(mensagem):
             codigoUsuario = RespUsuarioDez+RespUsuarioUni
             print ("Código Usuário = " +str(codigoUsuario))
             time.sleep(1)
-            
-             
-             
+           
         if (telaEstado=='codigo' and estadoBotaoAzul==1):
             os.system ('fswebcam -r640x480 "capturas/1teste.jpg"')
             #time.sleep(1)
             os.system('gpicview "capturas/1teste.jpg" &')   
             time.sleep(3)
             os.system('sudo killall -9 gpicview')
-            
-        
+      
         ### Tela Jogando
         if(telaEstado=='jogando' and estadoBotaoVermelho==1):
             tela='codigo'
@@ -1133,9 +1091,7 @@ def gerenciador_de_Telas(mensagem):
             cicloAtual=cicloAtual+1
             lerCartao_Dez()
             lerCartao_Uni() 
-            
-            
-                    
+                  
             RespUsuarioTot=RespUsuarioDez+RespUsuarioUni
             print("<<<<<<<<<<<<<<<<< Resposta do usuário : " + str(RespUsuarioTot))
 
@@ -1151,10 +1107,7 @@ def gerenciador_de_Telas(mensagem):
                     precisaInverter='S'
 
             janela.update()
-        
-        
-        
-        
+       
         ### Tela Acertou
         if (telaEstado=='acertou' and estadoBotaoVerde==1):
             if (cicloAtual<=cicloMax):
@@ -1176,41 +1129,31 @@ def gerenciador_de_Telas(mensagem):
         ### Tela Resultados
         if (telaEstado=='resultados' and estadoBotaoVerde==1):
             tela='codigo'
-            
-            
-            
+           
         #### Tela Jogando + Sorteio
         if (tela=='jogando' and telaEstado=='jogando' and sorteioEstado!='OK'):
             sorteioEstado='OK'
             sorteioNumeros()
-            
-        
-            
+           
         janela.update() 
-        
-     
 
-##########################################
 ### Prog Principal
 print("Iniciando")
 janela = tk.Tk() # Criando objeto janela
 
 ### Definições gerais da Janela
-#janela.attributes('-fullscreen', True) # para deixar em tela cheia
+janela.attributes('-fullscreen', True) # para deixar em tela cheia
 m = janela.maxsize()
 janela.geometry('{}x{}+0+0'.format(*m))
 janela.title('Matemática com Emoção - Vansan')
 
 #janela.config(bg='light blue') #cor de fundo da janela
-image=tk.PhotoImage(file="paisagem.gif") #se estiver na mesma pasta
-#image=tk.PhotoImage(file="E:\\OneDrive\\OneDrive - Centro Paula Souza - Etec\\User-Windows\\Desktop\\paisagem.gif") #se estiver pasta diferente
+image=tk.PhotoImage(file="paisagem.gif") #se estiver na mesma pasta E Arquivo Precisa ser .GIF
+#image=tk.PhotoImage(file="E:\\OneDrive\\paisagem.gif") #se estiver pasta diferente
 image=image.subsample(1,1)
 labelimage=tk.Label(image=image)
 labelimage.place(x=0,y=0,relwidth=1.0,relheight=1.0)
-####
 
-
-#######################
 ## Iniciando Leituras
 thread_MicroControlador = threading.Thread(target=MicroControlador,args=("MicroControlador",))
 thread_MicroControlador.start()
