@@ -1,9 +1,11 @@
 <html>
 <meta charset=UTF-8>
-<title> Projeto EMFK - Julio Vansan Gonçalves </title>
+<title> Sistema EMFK </title>
 <body>
-<h3> Projeto EMFK - Julio Vansan Gonçalves - Consulta Detalhada</h3>
-<br>
+<h2>Sistema complementar para o acompanhamento dos resultados</h2> 
+<h2>EMFK - Emotion Math For Kids</h2>
+<h3>Consulta Detalhada</h3>
+
 <?php
 
 	if(isset($_GET['id']) && is_numeric($_GET['id'])){
@@ -41,8 +43,7 @@
 	}else{
 		echo '<input type="button" onclick="window.location='."'detalhes.php?id=$id_proximo'".';" value=">">';
 	}
-	
-	
+		
 	echo " <br><br> Anterior =  ". $id_anterior;
 	echo " || Próximo = ". $id_proximo . "<br>";	
 	echo "<hr size =2>";
@@ -127,13 +128,10 @@
 			echo "<td>". $dados['apiIdade']."</td>";
 			echo "<td>". $dados['apiGenero']."</td>";
 		echo "</tr>";		
-		
-		
-		
+				
 		echo "</table>";
 		
-		echo "</td></tr></table>";
-	
+		echo "</td></tr></table>";	
 	}
 
 	$mysql->fechar();
