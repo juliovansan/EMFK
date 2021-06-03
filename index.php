@@ -1,12 +1,12 @@
 <html>
 <meta charset=UTF-8>
-<title> Projeto EMFK - Julio Vansan Gonçalves </title>
+<title> Sistema EMFK </title>
 <body>
-<h3> Projeto EMFK - Julio Vansan Gonçalves - Consulta geral</h3>
-<b>* Clique na imagem para ver detalhes</b><br><br>
+<h2>Sistema complementar para o acompanhamento dos resultados</h2> 
+<h2>EMFK - Emotion Math For Kids</h2>
+<h3>Consulta geral</h3>
+<strong>* Clique na imagem para ver detalhes</strong><br><br>
 <?php
-
-	
 	include_once('conexao.php');
 	//criando o objeto mysql e conectando ao banco de dados
 	$mysql = new BancodeDados();
@@ -41,13 +41,11 @@
 		echo "<td>". $dados['tipoOperacao']."</td>";
 		echo "<td>". $dados['codGrupoCiclo']."</td>";
 			$imagem = $dados['nomeIMG'];
-		//}
 		$id = $dados['codGrupoCiclo'];
 		echo "<td align='center'><a href='detalhes.php?id=$id'><img src='$imagem' width='50px' heigth='50px'></a>";
 		echo "</tr>";
 	}
-	echo "</table>";
-	
+	echo "</table>";	
 	$mysql->fechar();
 ?>
 <br>
