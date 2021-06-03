@@ -8,8 +8,8 @@ function convertedata($data){
 	
 class BancodeDados {
     private $host = "localhost"; 	// Nome ou IP do Servidor
-    private $user = "xxxx"; 		// Usuário do Servidor MySQL
-    private $senha = "xxxx"; 		// Senha do Usuário MySQL
+    private $user = "####"; 		// Usuário do Servidor MySQL
+    private $senha = "####"; 		// Senha do Usuário MySQL
     private $banco = "bd_projeto"; 		// Nome do seu Banco de Dados
     public $con;
 	
@@ -45,10 +45,6 @@ class BancodeDados {
 		} 
 		$this->fechar();
 		return $dados;
-	}
-
-	
+	}	
 }
-
-
 ?>
